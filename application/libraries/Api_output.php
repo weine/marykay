@@ -4,28 +4,43 @@
  */
 class Api_output
 {
+	public $json_data;
 	public function __construct()
 	{
 
 	}
 
-	public function json_output($key, $data)
+	public function set_data($key, $data)
 	{
 		if(empty($key) || empty($data))
 		{
 			return FALSE;
 		}
 
-		$arr_key_data = array($key => $data);
+		$this->json_data = array($key => $data);
 
-		$json_data = json_encode($arr_key_data);
-
-		if(FALSE === $json_data)
+		if(FALSE === $this->json_data)
 		{
 			return FALSE;
 		}
+	}
 
-		echo $json_data;
+	/* 輸出JSON */
+	public function json_output()
+	{
+		$output = json_encode($this->json_data);
+		//$output = FALSE;
+		if(FALSE === $output || FALSE === $this->json_data)
+		{
+			$output = array(
+								'msg' => '001',
+								'info' => 'JSON輸出錯誤'
+							);
+
+			$output = json_encode($output);
+		}
+
+		echo $output;
 		exit;
 	}
 }

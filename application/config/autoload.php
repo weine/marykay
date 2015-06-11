@@ -60,7 +60,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
 
-$autoload['libraries'] = array('pub', 'api_input', 'api_output');
+$autoload['libraries'] = array('pub', 'api_input', 'api_output', 'wlog');
 
 
 /*
