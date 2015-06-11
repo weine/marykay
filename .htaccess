@@ -1,4 +1,4 @@
 RewriteEngine on
-RewriteBase /marykay/
+RewriteBase /star/
 RewriteCond $1 !^(index\.php|images|public|.*\.css|public|.*\.js|robots\.txt|$)
 RewriteRule ^(.*)$ index.php/$1 [L,QSA]

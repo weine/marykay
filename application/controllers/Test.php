@@ -29,7 +29,7 @@ class Test extends CI_Controller {
 	{
 		$a = array('it' => 'ggwp', 'seq' => '1124');
 
-		$this->wlog->debug_log('test');
+		$this->wlog->debug_log('API輸入錯誤!', __FUNCTION__);
 
 		$this->api_output->set_data('data', $a);
 		$this->api_output->json_output();
@@ -37,17 +37,39 @@ class Test extends CI_Controller {
 
 	public function bind_test()
 	{
+		$bind_mark = ":";
 		$sql = "INSERT INTO ABC(NAME, AGE, ADDR) VALUES(:NAME, :AGE, :ADDR)";
-		$sql = preg_quote('/' . ':', '/');
+
+		$bind_mark = '/' . preg_quote($bind_mark, '/') . '/i';
 
 		$bind = array(":NAME" => "mary", ":AGE" => "20", ":ADDR" => "火星上");
+		$bind_count = count($bind);
 
-		//str_replace(":NAME", "mary", $sql);
 
-		// foreach($bind as $k => $v)
+		// if($c = preg_match_all("/:[^:]*[^:|,| |)]/i", $sql, $matches))
 		// {
-		// 	str_replace($k, $this->db->escape($v), $sql);
+		// 	foreach($bind as $k => $v)
+		// 	{
+		// 		str_replace($k, $this->db->escape($v), $sql);
+		// 	}
 		// }
+		if($c = preg_match_all("/:[^:]*[^:|,| |)]/i", $sql, $matches,PREG_OFFSET_CAPTURE) != $bind_count)
+		{
+			var_export($sql);
+			exit;
+		}
+
+		do
+		{
+			$c--;
+			$escaped_value = $this->escape($bind[$matches[0][$c][0]]);
+			if (is_array($escaped_value))
+			{
+				$escaped_value = '('.implode(',', $escaped_value).')';
+			}
+			$sql = substr_replace($sql, $escaped_value, $matches[0][$c][1], strlen($matches[0][$c][0]));
+		}
+		while ($c !== 0);
 
 		var_export($sql);
 	}
