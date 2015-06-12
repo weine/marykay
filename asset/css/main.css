@@ -1,0 +1,44 @@
+#container
+{
+	width: 1000px;
+	height: 800px;
+	margin: 0 auto;
+	/*background-color: #FFB7DD;*/
+}
+
+#header
+{
+	width: 1000px;
+	height: 100px;
+	background-color: #FF44AA;
+	margin: 0 auto;
+	/*background-image: url(../images/banner2.jpg);*/
+}
+
+#title
+{
+	width:400px;
+	font-size: 40px;
+	/*float: right;*/
+	/*margin-top:100px;*/
+	color: #FFFFFF;
+}
+
+#main
+{
+	margin-top:10px;
+	height: 700px;
+	text-align: center;
+	color: #666666;
+	border: 1px solid #AAAAAA;
+}
+
+#main td
+{
+	border: 1px solid #444444;
+}
+
+#main tr
+{
+	border: 2px solid #444444;
+}
