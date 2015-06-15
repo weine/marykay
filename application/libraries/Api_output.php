@@ -7,7 +7,13 @@ class Api_output
 	public $json_data;
 	public function __construct()
 	{
-		$this->json_data['status'] = '100';
+		$this->json_data['status'] = '200';
+	}
+
+	public function set_status($code = "200", $info = "")
+	{
+		$this->json_data['status'] = (string) $code;
+		$this->json_data['info'] = (string) $info;
 	}
 
 	public function set_data($key, $data)

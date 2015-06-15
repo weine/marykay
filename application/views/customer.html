@@ -1,42 +1,178 @@
 <style type="text/css">
-	tr:hover
+	img
 	{
-		background-color: #FFB3FF;
+		margin-left: 5px;
 	}
-</style>
-<div id="container">
-	<div id="header">
-		<div id="title">{title}</div>
-	</div>
-	<div id="main">
-		<div style="width:800px;text-align: center;margin: 0 auto;">
-		<table width="800" border="1" cellpadding="2" cellspacing="0">
-			<tr>
-				<td>客戶編號</td>
-				<td>姓名</td>
-				<td>電話</td>
-				<td>生日</td>
-				<td>FB</td>
-				<td>地址</td>
-			</tr>
-			<tr>
-				<td>CS0001</td>
-				<td>劉笨蛋</td>
-				<td>0987878787</td>
-				<td>1992年3月7日</td>
-				<td>我怎麼會知道</td>
-				<td>火星上</td>
-			</tr>
-			<tr>
-				<td>CS0002</td>
-				<td>金城武</td>
-				<td>097878777</td>
-				<td>1980年?月?日</td>
-				<td>我怎麼會知道</td>
-				<td>太陽上</td>
-			</tr>
-		</table>
-		<div>
 
-	</div>		
-</div>
+	#promp table
+	{
+		font-size: 12px;
+		width: 350px;
+		border: 2px solid #FFB7DD;
+	}
+
+	#promp td
+	{
+		padding:3px;
+	}
+	
+	#promp #addr, #fb
+	{
+		width: 260px;
+	}
+
+</style>	
+
+	<main class="content">
+		<div>
+			<table id="customer_list" width="600">
+				<tr style="background-color: #FFC8B4;">
+					<td width="5%"></td>
+					<td width="20%">客戶編號</td>
+					<td width="20%">姓名</td>
+					<td width="20%">電話</td>
+					<td width="20%">方便聯絡時間</td>
+					<td>動作</td>
+				</tr>
+				{data}
+				<tr>
+					<td></td>
+					<td>{CUS_ID}</td>
+					<td>{NAME}</td>
+					<td>{PHONE}</td>
+					<td>{CAN_CALL}</td>
+					<td><img class="delBtn" src="./asset/images/delete.png"></td>
+				</tr>
+				{/data}
+			</table>
+		</div>
+	</main><!-- .content -->
+<script type="text/javascript">
+	$(function(){
+		
+		$('.delBtn').click(function(){
+			var cus_id = $(this).parent().parent().children().eq(1).text();
+			var cus_name = $(this).parent().parent().children().eq(2).text();
+
+			/* 刪除 */
+			var delstate = {
+				'st0' : {
+					title: '【警告】',
+					html : '<div style="font-size:16px;font-weight:bold;color:red;">確定刪除 '+ cus_name +'  ?</div>',
+					buttons : {"確定" : true, "取消" : false},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							e.preventDefault();
+							$.prompt.goToState('st1');
+							return false;
+						}
+						else
+						{
+							$.prompt.close();
+						}
+					}
+				},
+				'st1' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:green;">刪除成功</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();	
+						}
+					}
+				},
+				'st2' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:red;">刪除失敗</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();	
+						}
+					}
+				}
+			};
+
+			$.prompt(delstate);
+		});
+
+		/* detail */
+		$("tr").click(function(){
+			var cus_id = $(this).children().eq(1).text();
+			var jsonstr = JSON.stringify({"cus_id":cus_id});
+			var cus_info;
+
+
+			/* ajax post */
+			$.post('./Customer/getcus',
+					{data:jsonstr},
+					function(res)
+					{
+						if(res.status == '100')
+						{
+							cus_info = res.data;
+
+							var can_call_html = '';
+							switch(cus_info.CAN_CALL)
+							{
+								case 1:
+									can_call_html = '<input name="can_call" type="radio" value="1" checked="checked" /><input name="can_call" type="radio" value="2" /><input name="can_call" type="radio" value="3" />';
+									break;
+								case 2:
+									can_call_html = '<input name="can_call" type="radio" value="1" /><input name="can_call" type="radio" value="2" checked="checked" /><input name="can_call" type="radio" value="3" />';
+									break;
+								case 3:
+									can_call_html = '<input name="can_call" type="radio" value="1" /><input name="can_call" type="radio" value="2" /><input name="can_call" type="radio" value="3" checked="checked" />';
+									break;
+								default:
+									can_call_html = '<input name="can_call" type="radio" value="1" checked="checked" /><input name="can_call" type="radio" value="2" /><input name="can_call" type="radio" value="3" />';
+									break;
+							}
+
+							var view_format = '<div id="promp"><table><tr>'+
+												'<td width="20%" align="right">客戶編號 </td>'+'<td>'+ cus_info.CUS_ID +'</td>'+
+											'</tr>'+
+											'<tr>'+
+												'<td align="right">姓名 </td><td><input id="name" type="text" value="'+ cus_info.NAME +'" /></td>'+
+											'</tr>'+
+											'<tr>'+
+												'<td align="right">FB </td><td><input id="fb" type="text" size="20" value="'+ cus_info.FB +'" /></td>'+
+											'</tr>'+
+											'<tr>'+
+												'<td align="right">電話 </td><td><input id="phone" type="text" value="'+ cus_info.PHONE +'" /></td>'+
+											'</tr>'+
+											'<tr>'+
+												'<td align="right">地址 </td><td><input id="addr" type="text" value="'+ cus_info.ADDR +'" size="20" /></td>'+
+											'</tr>'+
+											'<tr>'+
+												'<td align="right">可聯絡時間 </td><td>'+ can_call_html +'</td>'+
+											'</tr></table></div>';
+
+							var detail_cus = {
+								'info' : {
+									title : '【客戶資料】',
+									html : view_format,
+									buttons : {"修改" : true, "取消" : false},
+									submit : function(e,v,m,f){
+
+									}
+								}
+							};
+							$.prompt(detail_cus);
+						}
+						else
+						{
+							$.prompt("查詢失敗");
+							return;
+						}
+
+					},
+					"json"
+				);
+
+			
+		});
+	});
+</script>

@@ -1,0 +1,136 @@
+<style type="text/css">
+table
+{
+	border: none;	
+}
+
+td
+{
+	font-size: 16px;
+	padding-top: 10px;
+}
+
+#func
+{
+	width:200px;
+	height: 30px;
+	margin:0 auto;
+	text-align:left;
+	font-size:22px;
+	font-weight: bold;
+	padding-top: 5px;
+	margin-top:20px;
+	color: #FF359A;
+}
+</style>
+<main class="content">
+	<div id="func">新增客戶</div>
+	<div style="margin-top: 15px;">
+		<table width="400" cellpadding="2" cellspacing="2">
+			<tr>
+				<td width="40%" align="right">姓名:</td>
+				<td><input type="text" name="name" id="name" autofocus="autofocus" /></td>
+			</tr>
+			<tr>
+				<td align="right">生日:</td>
+				<td><input type="date" name="birthday" id="birthday" /></td>
+			</tr>
+			<tr>
+				<td align="right">FaceBook:</td>
+				<td><input type="text" name="fb" id="fb" /></td>
+			</tr>
+			<tr>
+				<td align="right">行動電話:</td>
+				<td><input type="text" name="phone" id="phone" /></td>
+			</tr>
+			<tr>
+				<td align="right">地址:</td>
+				<td><input type="text" name="addr" id="addr" /></td>
+			</tr>
+			<tr>
+				<td align="right">何時最方便聯絡:</td>
+				<td>
+					<input type="radio" name="can_call" value="1" checked="checked">上午 
+					<input type="radio" name="can_call" value="2">下午 
+					<input type="radio" name="can_call" value="3">晚上 
+				</td>
+			</tr>
+			<tr>
+				<td align="right"></td>
+				<td>
+					<button id="addBtn" type="button">送出</button> 
+				</td>
+			</tr>
+		</table>
+		<div id="api_msg" style="color:red;font-size:12px;display: none;width:300px;text-align: center;margin: 0 auto;margin-top: 10px;"></div>
+	</div>
+</main><!-- .content -->
+<script type="text/javascript">
+	$(function(){
+
+		
+		$("#addBtn").click(function(){
+			var msg = "";
+
+			var name = $("#name").val().trim();
+			var birthday = $("#birthday").val().trim();
+			var fb = $("#fb").val().trim();
+			var phone = $("#phone").val().trim();
+			var addr = $("#addr").val().trim();
+			var can_call = $(":input:checked[name='can_call']").val();
+
+			if(name == "")
+			{
+				msg += "- 請輸入姓名!\n";
+			}
+
+			if(birthday == "")
+			{
+				msg += "- 請輸入生日!\n";
+			}
+
+			if(fb == "")
+			{
+				msg += "- 請輸入FB!\n";
+			}
+
+			if(phone == "")
+			{
+				msg += "- 請輸入電話!\n";
+			}
+
+			if(addr == "")
+			{
+				msg += "- 請輸入地址!\n";
+			}
+
+			if(msg != "")
+			{
+				alert(msg);
+			}
+			else
+			{
+				//alert(name + "\n" + birthday + "\n" + fb + "\n" + phone + "\n" + addr + "\n" + can_call);
+
+				var jsonstr = JSON.stringify({"name":name,"birthday":birthday,"fb":fb,"phone":phone,"addr":addr,"can_call":can_call});
+
+				$.post(
+						"/marykay/Customer/addcus", 
+						{data:jsonstr},
+						function(res)
+						{
+							$('#api_msg').html(res.api_msg).show().fadeOut(5000);
+
+							$('#name').val('');
+							$('#birthday').val('');
+							$('#fb').val('');
+							$('#phone').val('');
+							$('#addr').val('');
+						},
+						"json"
+					);
+			}
+
+		});
+	});
+</script>
