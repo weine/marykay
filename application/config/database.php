@@ -64,7 +64,7 @@ $query_builder = TRUE;
 
 $db['star'] = array(
 	'dsn'	=> '',
-	'hostname' => '192.168.1.109',
+	'hostname' => 'localhost',
 	'username' => 'root',
 	'password' => 'root',
 	'database' => 'star',
