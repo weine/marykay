@@ -16,18 +16,29 @@ class Customer_model extends CI_Model
 	{
 		$table = "CUSTOMER";
 
-		$sql = "SELECT CUS_ID, NAME, PHONE, 
+		if($start == '_' && $offset == '_')
+		{
+			$sql = "SELECT CUS_ID FROM {$table} WHERE IS_DEL = '0'";
+
+			$query = $this->db->query($sql);
+		}
+		else
+		{
+			$sql = "SELECT CUS_ID, NAME, PHONE, 
 					   (CASE CAN_CALL WHEN '1' THEN '上午' 
 					   				 WHEN '2' THEN '下午' 
 					   				 ELSE '晚上' 
 					   	END) CAN_CALL  
 				FROM {$table} 
+				WHERE IS_DEL = '0'
 				ORDER BY CUS_ID 
 				LIMIT :IDX, :OFFSET";
 
-		$bind = array(":IDX" => $start, ":OFFSET" => $offset);
+			$bind = array(":IDX" => $start, ":OFFSET" => $offset);
 
-		$query = $this->db->query($sql, $bind);
+			$query = $this->db->query($sql, $bind);
+		}
+		
 		if(FALSE === $query)
 		{
 			$this->wlog->debug_log($this->db->last_query(), __METHOD__);
@@ -38,7 +49,14 @@ class Customer_model extends CI_Model
 			return '0';
 		}
 
-		$result = $query->result_array();
+		if($start == '_' && $offset == '_')
+		{
+			$result = $query->num_rows();
+		}
+		else
+		{
+			$result = $query->result_array();	
+		}
 
 		return $result;
 	}
@@ -113,6 +131,35 @@ class Customer_model extends CI_Model
 		}
 
 		return $result;
+	}
+
+	/* 刪除客戶資料 */
+	public function del_cus($cus_id)
+	{
+		if(empty($cus_id))
+		{
+			return "-1";
+		}
+
+		$table = "CUSTOMER";
+
+		$sql = "UPDATE {$table} SET IS_DEL='1', IS_DEL_DT=NOW() WHERE CUS_ID=:CUS_ID";
+
+		$bind = array(
+						":CUS_ID" => $cus_id,
+					);
+
+		$query = $this->db->query($sql, $bind);
+		if(FALSE === $query)
+		{
+			$this->wlog->debug_log($this->db->last_query(), __METHOD__);
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+
 	}
 }
 

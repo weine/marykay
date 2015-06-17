@@ -115,6 +115,16 @@ body {
 	padding: 0 0 80px;
 }
 
+.content a:link
+{
+	text-decoration: none;
+}
+
+.content a:visited
+{
+	text-decoration: none;
+}
+
 table
 {
 	margin: 0 auto;

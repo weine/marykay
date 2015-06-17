@@ -3,7 +3,7 @@
 	{
 		margin-left: 5px;
 	}
-
+	
 	#promp table
 	{
 		font-size: 12px;
@@ -21,8 +21,14 @@
 		width: 260px;
 	}
 
-</style>	
+	.cus, .delBtn, .editBtn
+	{
+		cursor: pointer;
+	}
 
+</style>
+<link  rel="stylesheet" type="text/css" href="{css}/twbspagination.css" />
+<script type="text/javascript" src="{js}/jquery.twbsPagination.min.js"></script>
 	<main class="content">
 		<div>
 			<table id="customer_list" width="600">
@@ -37,19 +43,38 @@
 				{data}
 				<tr>
 					<td></td>
-					<td>{CUS_ID}</td>
-					<td>{NAME}</td>
+					<td class="cus">{CUS_ID}</td>
+					<td class="cus">{NAME}</td>
 					<td>{PHONE}</td>
 					<td>{CAN_CALL}</td>
-					<td><img class="delBtn" src="./asset/images/delete.png"></td>
+					<td>
+						<img class="delBtn" src="./asset/images/delete.png">
+						<a href="./Customer/question/{CUS_ID}"><img class="editBtn" src="./asset/images/edit.png" style="margin-left:5px;"></a>
+					</td>
 				</tr>
 				{/data}
 			</table>
 		</div>
+		<div id="pagination" class="pagination-sm" style="width:500px;margin:0 auto; text-align:center;"></div>
 	</main><!-- .content -->
 <script type="text/javascript">
 	$(function(){
-		
+
+		var total_pages = {total_pages};
+		var visible_pages = 5;
+
+		if(total_pages < visible_pages)
+		{
+			visible_pages = total_pages;
+		}
+
+		$('#pagination').twbsPagination({
+	        totalPages: {total_pages},
+	        visiblePages: visible_pages,
+	        href: './Customer/p/{{number}}'
+	    });
+
+			
 		$('.delBtn').click(function(){
 			var cus_id = $(this).parent().parent().children().eq(1).text();
 			var cus_name = $(this).parent().parent().children().eq(2).text();
@@ -64,7 +89,26 @@
 						if(v)
 						{
 							e.preventDefault();
-							$.prompt.goToState('st1');
+
+							var jsonstr = JSON.stringify({"cus_id":cus_id});
+							$.post(
+									"/marykay/Customer/delcus",
+									{data:jsonstr},
+									function(res)
+									{
+										if(res.status == '100')
+										{
+											$.prompt.goToState('st1');
+										}
+										else
+										{
+											$.prompt.goToState('st2');
+										}
+
+									},
+									"json"
+								);
+							
 							return false;
 						}
 						else
@@ -79,7 +123,8 @@
 					submit : function(e,v,m,f){
 						if(v)
 						{
-							$.prompt.close();	
+							$.prompt.close();
+							history.go(0);
 						}
 					}
 				},
@@ -89,7 +134,8 @@
 					submit : function(e,v,m,f){
 						if(v)
 						{
-							$.prompt.close();	
+							$.prompt.close();
+							history.go(0);
 						}
 					}
 				}
@@ -99,8 +145,8 @@
 		});
 
 		/* detail */
-		$("tr").click(function(){
-			var cus_id = $(this).children().eq(1).text();
+		$(".cus").click(function(){
+			var cus_id = $(this).parent().children().eq(1).text();
 			var jsonstr = JSON.stringify({"cus_id":cus_id});
 			var cus_info;
 
@@ -117,17 +163,17 @@
 							var can_call_html = '';
 							switch(cus_info.CAN_CALL)
 							{
-								case 1:
-									can_call_html = '<input name="can_call" type="radio" value="1" checked="checked" /><input name="can_call" type="radio" value="2" /><input name="can_call" type="radio" value="3" />';
+								case '1':
+									can_call_html = '<input name="can_call" type="radio" value="1" checked="true" />上午<input name="can_call" type="radio" value="2" />下午<input name="can_call" type="radio" value="3" />晚上';
 									break;
-								case 2:
-									can_call_html = '<input name="can_call" type="radio" value="1" /><input name="can_call" type="radio" value="2" checked="checked" /><input name="can_call" type="radio" value="3" />';
+								case '2':
+									can_call_html = '<input name="can_call" type="radio" value="1" />上午<input name="can_call" type="radio" value="2" checked="true" />下午<input name="can_call" type="radio" value="3" />晚上';
 									break;
-								case 3:
-									can_call_html = '<input name="can_call" type="radio" value="1" /><input name="can_call" type="radio" value="2" /><input name="can_call" type="radio" value="3" checked="checked" />';
+								case '3':
+									can_call_html = '<input name="can_call" type="radio" value="1" />上午<input name="can_call" type="radio" value="2" />下午<input name="can_call" type="radio" value="3" checked="true" />晚上';
 									break;
 								default:
-									can_call_html = '<input name="can_call" type="radio" value="1" checked="checked" /><input name="can_call" type="radio" value="2" /><input name="can_call" type="radio" value="3" />';
+									can_call_html = '<input name="can_call" type="radio" value="1" checked="true" />上午<input name="can_call" type="radio" value="2" />下午<input name="can_call" type="radio" value="3" />晚上';
 									break;
 							}
 
