@@ -115,7 +115,7 @@ class Customer_model extends CI_Model
 		/* table */
 		$table = 'CUSTOMER';
 
-		$sql = "SELECT CUS_ID, NAME, DATE_FORMAT(BIRTHDAY, '%Y/%m/%d') BIRTHDAY, FB, PHONE, ADDR, CAN_CALL
+		$sql = "SELECT CUS_ID, NAME, DATE_FORMAT(BIRTHDAY, '%Y-%m-%d') BIRTHDAY, FB, PHONE, ADDR, CAN_CALL
 				FROM {$table} 
 				WHERE CUS_ID=:CUS_ID";
 		$bind = array(':CUS_ID' => $cus_id);
@@ -159,6 +159,56 @@ class Customer_model extends CI_Model
 		{
 			return TRUE;
 		}
+
+	}
+
+	/* 取得題目 */
+	public function get_qu()
+	{
+		$table = "QUESTION";
+		$sql = "SELECT * FROM {$table}";
+		$query = $this->db->query($sql);
+		$qus = array();
+		if(FALSE === $query)
+		{
+			$this->wlog->debug_log($this->db->last_query(), __METHOD__);
+			$result = FALSE;
+		}
+		else
+		{
+			$result = $query->result_array();
+			foreach($result as $k => $v)
+			{
+				$qus[$v['QUES_ID']] = $v['QUES_CONTENT'];
+			}
+		}
+
+		return $qus;
+	}
+
+	/* 取得答案項目 */
+	public function get_ans()
+	{
+		$table = "QUES_ANS";
+		$sql = "SELECT * FROM {$table}";
+		$query = $this->db->query($sql);
+		if(FALSE === $query)
+		{
+			$this->wlog->debug_log($this->db->last_query(), __METHOD__);
+			$result = FALSE;
+		}
+		else
+		{
+			$result = $query->result_array();
+		}
+
+		$ans = array();
+		foreach($result as $k => $v)
+		{
+			$ans[$v['QUES_ID']."_A"][] = array('ANS_ID' => $v['QANS_ID'], 'ANS' => $v['QANS_INFO']);
+		}
+
+		return $ans;
 
 	}
 }

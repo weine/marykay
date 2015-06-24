@@ -138,6 +138,7 @@ class Customer extends CI_Controller
 		return $output;
 	}
 
+	/* 新增客戶view */
 	public function add()
 	{
 		$content = $this->parser->parse('addcus.html', $this->data, TRUE);
@@ -315,7 +316,72 @@ class Customer extends CI_Controller
 		$json = json_encode($output);
 		echo $json;
 	}
-	
+
+	public function cinfo($cus_id)
+	{
+		if(empty($cus_id))
+		{
+			$this->index();
+		}
+
+		$cus_id = (string) trim($cus_id);
+
+		/* load model */
+		$this->load->model('Customer_model');
+
+		$result = $this->Customer_model->get_cus($cus_id);
+
+		$output = array();
+		if(FALSE === $result)
+		{
+			$output['status'] = "101";
+			$output['api_msg'] = "資料庫操作失敗!";
+		}
+		elseif("-1" === $result)
+		{
+			$output['status'] = "102";
+			$output['api_msg'] = "輸入參數錯誤";
+		}
+		else
+		{
+			$output['status'] = "100";
+			$output['api_msg'] = "查詢成功";
+			$output['data'] = $result;
+		}
+
+		/* 取得題目 */
+		$res_qu = $this->Customer_model->get_qu();
+		if(FALSE === $res_qu)
+		{
+			$output['status'] = "101";
+			$output['api_msg'] = "資料庫操作失敗!";
+		}
+		else
+		{
+			$this->data = array_merge($res_qu, $this->data);
+		}
+
+		/* 取得答案 */
+		$res_ans = $this->Customer_model->get_ans();
+		if(FALSE === $res_ans)
+		{
+			$output['status'] = "101";
+			$output['api_msg'] = "資料庫操作失敗!";
+		}
+		else
+		{
+			$this->data = array_merge($res_ans, $this->data);
+		}
+
+
+		$this->data = array_merge($result, $this->data);
+		$this->data = array_merge($output, $this->data);
+
+		$content = $this->parser->parse('customer_info.html', $this->data, TRUE);
+		$this->data['content'] = $content;
+
+		$this->parser->parse('page_outer.html', $this->data);
+	}
 
 	public function testpost()
 	{

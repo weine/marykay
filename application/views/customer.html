@@ -26,6 +26,13 @@
 		cursor: pointer;
 	}
 
+	a:link, a:visited
+	{
+		color:#000000;
+	}
+
+
+
 </style>
 <link  rel="stylesheet" type="text/css" href="{css}/twbspagination.css" />
 <script type="text/javascript" src="{js}/jquery.twbsPagination.min.js"></script>
@@ -43,8 +50,8 @@
 				{data}
 				<tr>
 					<td></td>
-					<td class="cus">{CUS_ID}</td>
-					<td class="cus">{NAME}</td>
+					<td><a href="./Customer/cinfo/{CUS_ID}">{CUS_ID}</a></td>
+					<td><a href="./Customer/cinfo/{CUS_ID}">{NAME}</a></td>
 					<td>{PHONE}</td>
 					<td>{CAN_CALL}</td>
 					<td>

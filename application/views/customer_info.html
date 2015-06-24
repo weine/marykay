@@ -1,5 +1,145 @@
+<style type="text/css">
+	td 
+	{
+		padding: 4px;
+	}
+
+	#question td 
+	{
+		padding: 5px;
+		border-bottom: 2px solid #666666;
+	}
+</style>
+
 <main class="content">
+	<div style="width:400px;margin: 0 auto;margin-top:15px;font-size:24px;padding:8px;border:2px solid #666666;">客戶詳細</div>
 	<div>
-		
+		<table width="500">
+			<tr>
+				<td wdith="30%">客戶編號</td>
+				<td>{CUS_ID}</td>
+			</tr>
+			<tr>
+				<td>姓名</td>
+				<td><input name="name" type="text" value="{NAME}" /></td>
+			</tr>
+			<tr>
+				<td>生日</td>
+				<td><input name="birthday" type="date" value="{BIRTHDAY}" /></td>
+			</tr>
+			<tr>
+				<td>FB</td>
+				<td><input name="fb" type="text" size="30" value="{FB}" /></td>
+			</tr>
+			<tr>
+				<td>電話</td>
+				<td><input name="phone" type="text" value="{PHONE}" /></td>
+			</tr>
+			<tr>
+				<td>地址</td>
+				<td><input name="addr" type="text" size="40" value="{ADDR}" /></td>
+			</tr>
+			<tr>
+				<td>可聯絡時間</td>
+				<td id="contact_time">
+					<input name="can_call" type="radio" value="1" />上午
+					<input name="can_call" type="radio" value="2" />下午
+					<input name="can_call" type="radio" value="3" />晚上
+				</td>
+			</tr>
+		</table>
 	</div>
+	<div style="width:400px;margin: 0 auto;margin-top:30px;font-size:24px;padding:8px;border:2px solid #666666;">問卷調查</div>
+	<div id="question">
+		<table width="700">
+			<tr>
+				<td width="40%">{QUES_A1}</td>
+				<td>
+					{QUES_A1_A}
+					<span><input name="QUES_A1" type="radio" value="{ANS_ID}" />{ANS}</span>
+					{/QUES_A1_A}
+				</td>
+			</tr>
+			<tr>
+				<td>{QUES_A2}</td>
+				<td>
+					{QUES_A2_A}
+					<span><input name="QUES_A2" type="checkbox" value="{ANS_ID}" />{ANS}</span>
+					{/QUES_A2_A}
+				</td>
+			</tr>
+			<tr>
+				<td>{QUES_A3}</td>
+				<td>
+					{QUES_A3_A}
+					<span><input name="QUES_A3" type="checkbox" value="{ANS_ID}" />{ANS}</span>
+					{/QUES_A3_A}
+				</td>
+			</tr>
+			<tr>
+				<td>{QUES_A4}</td>
+				<td>
+					{QUES_A4_A}
+					<span style="font-size:12px;"><input name="QUES_A4" type="radio" value="{ANS_ID}" />{ANS}</span><br>
+					{/QUES_A4_A}
+				</td>
+			</tr>
+			<tr>
+				<td>{QUES_A5}</td>
+				<td>
+					{QUES_A5_A}
+					<span style="font-size:12px;"><input name="QUES_A5" type="radio" value="{ANS_ID}" />{ANS}</span><br>
+					{/QUES_A5_A}
+				</td>
+			</tr>
+			<tr>
+				<td>{QUES_B1}</td>
+				<td>
+					{QUES_B1_A}
+					<span><input name="QUES_B1" type="checkbox" value="{ANS_ID}" />{ANS}</span><br>
+					{/QUES_B1_A}
+				</td>
+			</tr>
+			<tr>
+				<td>{QUES_B2}</td>
+				<td><input name="QUES_B2" type="text" size="50" /></td>
+			</tr>
+			<tr>
+				<td>{QUES_B3}</td>
+				<td><input name="QUES_B3" type="text" size="50" /></td>
+			</tr>
+			<tr>
+				<td>{QUES_B4}</td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+	<div style="width:80px;margin: 0 auto;padding:20px;"><button id="editBtn" style="margin:0 auto;" type="button">修改</button></div>
 </main><!-- .content -->
+<script type="text/javascript">
+	var can_call = {CAN_CALL};
+	switch(can_call)
+	{
+		case 1:
+			$('#contact_time').children().eq(0).attr('checked','true');
+			break;
+		case 2:
+			$('#contact_time').children().eq(1).attr('checked','true');
+			break;
+		case 3:
+			$('#contact_time').children().eq(2).attr('checked','true');
+			break;
+		default:
+			$('#contact_time').children().eq(0).attr('checked','true');
+	}
+
+	/* 使table標題右對齊 */
+	$('tr').each(function(){
+		$(this).children().eq(0).attr('align','right');
+	});
+
+	/* 修改按鈕 */
+	$('#editBtn').click(function(){
+		$.prompt('<div style="font-size:24px;color:red;text-align:center;">修改成功!</div>');
+	});
+</script>
