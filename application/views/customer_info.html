@@ -7,113 +7,186 @@
 	#question td 
 	{
 		padding: 5px;
-		border-bottom: 2px solid #666666;
+		border-bottom: 1px solid #666666;
+	}
+
+	ul, li {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.pannel_tab {
+		/*clear: left;*/
+		width: 800px;
+		margin: 0 auto;
+		margin-top: 10px;
+	}
+	ul.tabs {
+		width: 100%;
+		height: 32px;
+		border-bottom: 1px solid #999;
+		border-left: 1px solid #999;
+	}
+	ul.tabs {
+		width: 100%;
+		height: 32px;
+		border-bottom: 1px solid #999;
+		border-left: 1px solid #999;
+	}
+	ul.tabs li {
+		float: left;
+		height: 31px;
+		line-height: 31px;
+		overflow: hidden;
+		position: relative;
+		margin-bottom: -1px;	/* 讓 li 往下移來遮住 ul 的部份 border-bottom */
+		border: 1px solid #999;
+		border-left: none;
+		background: #e1e1e1;
+	}
+	ul.tabs li a {
+		display: block;
+		padding: 0 20px;
+		color: #000;
+		border: 1px solid #fff;
+		text-decoration: none;
+	}
+	ul.tabs li a:hover {
+		background: #ccc;
+	}
+	ul.tabs li.active  {
+		background: #fff;
+		border-bottom: 1px solid#fff;
+	}
+	ul.tabs li.active a:hover {
+		background: #fff;
+	}
+	div.tab_container {
+		clear: left;
+		width: 100%;
+		border: 1px solid #999;
+		border-top: none;
+		background: #fff;
+	}
+	div.tab_container .tab_content {
+		padding: 20px;
+	}
+	div.tab_content table {
+		border:none;
 	}
 </style>
 
 <main class="content">
-	<div style="width:400px;margin: 0 auto;margin-top:15px;font-size:24px;padding:8px;border:2px solid #666666;">客戶詳細</div>
-	<div>
-		<table width="500">
-			<tr>
-				<td wdith="30%">客戶編號</td>
-				<td>{CUS_ID}</td>
-			</tr>
-			<tr>
-				<td>姓名</td>
-				<td><input name="name" type="text" value="{NAME}" /></td>
-			</tr>
-			<tr>
-				<td>生日</td>
-				<td><input name="birthday" type="date" value="{BIRTHDAY}" /></td>
-			</tr>
-			<tr>
-				<td>FB</td>
-				<td><input name="fb" type="text" size="30" value="{FB}" /></td>
-			</tr>
-			<tr>
-				<td>電話</td>
-				<td><input name="phone" type="text" value="{PHONE}" /></td>
-			</tr>
-			<tr>
-				<td>地址</td>
-				<td><input name="addr" type="text" size="40" value="{ADDR}" /></td>
-			</tr>
-			<tr>
-				<td>可聯絡時間</td>
-				<td id="contact_time">
-					<input name="can_call" type="radio" value="1" />上午
-					<input name="can_call" type="radio" value="2" />下午
-					<input name="can_call" type="radio" value="3" />晚上
-				</td>
-			</tr>
-		</table>
+<div class="pannel_tab">
+	<ul class="tabs">
+		<li><a href="#tab1">詳細資料</a></li>
+		<li><a href="#tab2">問卷調查</a></li>
+		<li><a href="#tab3">推薦好友</a></li>
+	</ul>
+
+	<div class="tab_container">
+		<div id="tab1" class="tab_content">
+			<table width="500">
+				<tr>
+					<td wdith="30%">客戶編號</td>
+					<td>{CUS_ID}</td>
+				</tr>
+				<tr>
+					<td>姓名</td>
+					<td><input name="name" type="text" value="{NAME}" /></td>
+				</tr>
+				<tr>
+					<td>生日</td>
+					<td><input name="birthday" type="date" value="{BIRTHDAY}" /></td>
+				</tr>
+				<tr>
+					<td>FB</td>
+					<td><input name="fb" type="text" size="30" value="{FB}" /></td>
+				</tr>
+				<tr>
+					<td>電話</td>
+					<td><input name="phone" type="text" value="{PHONE}" /></td>
+				</tr>
+				<tr>
+					<td>地址</td>
+					<td><input name="addr" type="text" size="40" value="{ADDR}" /></td>
+				</tr>
+				<tr>
+					<td>可聯絡時間</td>
+					<td id="contact_time">
+						<input name="can_call" type="radio" value="1" />上午
+						<input name="can_call" type="radio" value="2" />下午
+						<input name="can_call" type="radio" value="3" />晚上
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="tab2" class="tab_content">
+			<table id="question" width="700">
+				<tr>
+					<td width="40%">{QUES_A1}</td>
+					<td>
+						{QUES_A1_A}
+						<label><input name="QUES_A1" type="radio" value="{ANS_ID}" />{ANS}</label>
+						{/QUES_A1_A}
+					</td>
+				</tr>
+				<tr>
+					<td>{QUES_A2}</td>
+					<td>
+						{QUES_A2_A}
+						<label><input name="QUES_A2" type="checkbox" value="{ANS_ID}" />{ANS}</label>
+						{/QUES_A2_A}
+					</td>
+				</tr>
+				<tr>
+					<td>{QUES_A3}</td>
+					<td>
+						{QUES_A3_A}
+						<label><input name="QUES_A3" type="checkbox" value="{ANS_ID}" />{ANS}</label>
+						{/QUES_A3_A}
+					</td>
+				</tr>
+				<tr>
+					<td>{QUES_A4}</td>
+					<td>
+						{QUES_A4_A}
+						<label style="font-size:12px;"><input name="QUES_A4" type="radio" value="{ANS_ID}" />{ANS}</label><br>
+						{/QUES_A4_A}
+					</td>
+				</tr>
+				<tr>
+					<td>{QUES_A5}</td>
+					<td>
+						{QUES_A5_A}
+						<label style="font-size:12px;"><input name="QUES_A5" type="radio" value="{ANS_ID}" />{ANS}</label><br>
+						{/QUES_A5_A}
+					</td>
+				</tr>
+				<tr>
+					<td>{QUES_B1}</td>
+					<td>
+						{QUES_B1_A}
+						<label><input name="QUES_B1" type="checkbox" value="{ANS_ID}" />{ANS}</label><br>
+						{/QUES_B1_A}
+					</td>
+				</tr>
+				<tr>
+					<td>{QUES_B2}</td>
+					<td><input name="QUES_B2" type="text" size="50" value="{CUS_Q_B2}" /></td>
+				</tr>
+				<tr>
+					<td>{QUES_B3}</td>
+					<td><input name="QUES_B3" type="text" size="50" value="{CUS_Q_B3}" /></td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="tab3" class="tab_content">
+
+		</div>
 	</div>
-	<div style="width:400px;margin: 0 auto;margin-top:30px;font-size:24px;padding:8px;border:2px solid #666666;">問卷調查</div>
-	<div id="question">
-		<table width="700">
-			<tr>
-				<td width="40%">{QUES_A1}</td>
-				<td>
-					{QUES_A1_A}
-					<span><input name="QUES_A1" type="radio" value="{ANS_ID}" />{ANS}</span>
-					{/QUES_A1_A}
-				</td>
-			</tr>
-			<tr>
-				<td>{QUES_A2}</td>
-				<td>
-					{QUES_A2_A}
-					<span><input name="QUES_A2" type="checkbox" value="{ANS_ID}" />{ANS}</span>
-					{/QUES_A2_A}
-				</td>
-			</tr>
-			<tr>
-				<td>{QUES_A3}</td>
-				<td>
-					{QUES_A3_A}
-					<span><input name="QUES_A3" type="checkbox" value="{ANS_ID}" />{ANS}</span>
-					{/QUES_A3_A}
-				</td>
-			</tr>
-			<tr>
-				<td>{QUES_A4}</td>
-				<td>
-					{QUES_A4_A}
-					<span style="font-size:12px;"><input name="QUES_A4" type="radio" value="{ANS_ID}" />{ANS}</span><br>
-					{/QUES_A4_A}
-				</td>
-			</tr>
-			<tr>
-				<td>{QUES_A5}</td>
-				<td>
-					{QUES_A5_A}
-					<span style="font-size:12px;"><input name="QUES_A5" type="radio" value="{ANS_ID}" />{ANS}</span><br>
-					{/QUES_A5_A}
-				</td>
-			</tr>
-			<tr>
-				<td>{QUES_B1}</td>
-				<td>
-					{QUES_B1_A}
-					<span><input name="QUES_B1" type="checkbox" value="{ANS_ID}" />{ANS}</span><br>
-					{/QUES_B1_A}
-				</td>
-			</tr>
-			<tr>
-				<td>{QUES_B2}</td>
-				<td><input name="QUES_B2" type="text" size="50" /></td>
-			</tr>
-			<tr>
-				<td>{QUES_B3}</td>
-				<td><input name="QUES_B3" type="text" size="50" /></td>
-			</tr>
-			<tr>
-				<td>{QUES_B4}</td>
-				<td></td>
-			</tr>
-		</table>
-	</div>
+</div>
 	<div style="width:80px;margin: 0 auto;padding:20px;"><button id="editBtn" style="margin:0 auto;" type="button">修改</button></div>
 </main><!-- .content -->
 <script type="text/javascript">
@@ -121,25 +194,204 @@
 	switch(can_call)
 	{
 		case 1:
-			$('#contact_time').children().eq(0).attr('checked','true');
+			$('#contact_time').children().eq(0).attr('checked','checked');
 			break;
 		case 2:
-			$('#contact_time').children().eq(1).attr('checked','true');
+			$('#contact_time').children().eq(1).attr('checked','checked');
 			break;
 		case 3:
-			$('#contact_time').children().eq(2).attr('checked','true');
+			$('#contact_time').children().eq(2).attr('checked','checked');
 			break;
 		default:
-			$('#contact_time').children().eq(0).attr('checked','true');
+			$('#contact_time').children().eq(0).attr('checked','checked');
 	}
 
-	/* 使table標題右對齊 */
-	$('tr').each(function(){
-		$(this).children().eq(0).attr('align','right');
+
+	var cus_q_a1 = '{CUS_Q_A1}';
+	var cus_q_a2 = '{CUS_Q_A2}';
+	var cus_q_a3 = '{CUS_Q_A3}';
+	var cus_q_a4 = '{CUS_Q_A4}';
+	var cus_q_a5 = '{CUS_Q_A5}';
+	var cus_q_b1 = '{CUS_Q_B1}';
+
+	var cus_q_a2_arr = new Array();
+	cus_q_a2_arr = cus_q_a2.split(',');
+
+	var cus_q_a3_arr = new Array();
+	cus_q_a3_arr = cus_q_a3.split(',');
+
+	var cus_q_b1_arr = new Array();
+	cus_q_b1_arr = cus_q_b1.split(',');
+
+	$('input[name=QUES_A1]').each(function(){
+		if($(this).val() == cus_q_a1)
+		{
+			$(this).attr('checked', 'checked');
+		}
 	});
 
-	/* 修改按鈕 */
-	$('#editBtn').click(function(){
-		$.prompt('<div style="font-size:24px;color:red;text-align:center;">修改成功!</div>');
+	$('input[name=QUES_A4]').each(function(){
+		if($(this).val() == cus_q_a4)
+		{
+			$(this).attr('checked', 'checked');
+		}
+	});
+
+	$('input[name=QUES_A5]').each(function(){
+		if($(this).val() == cus_q_a5)
+		{
+			$(this).attr('checked', 'checked');
+		}
+	});
+
+	$('input[name=QUES_A2]').each(function(){
+		if($.inArray($(this).val(), cus_q_a2_arr) != -1)
+		{
+			$(this).attr('checked', 'checked');
+		}
+	});
+
+	$('input[name=QUES_A3]').each(function(){
+		if($.inArray($(this).val(), cus_q_a3_arr) != -1)
+		{
+			$(this).attr('checked', 'checked');
+		}
+	});
+
+	$('input[name=QUES_B1]').each(function(){
+		if($.inArray($(this).val(), cus_q_b1_arr) != -1)
+		{
+			$(this).attr('checked', 'checked');
+		}
+	});
+
+	$(function(){
+
+		/* 使table標題右對齊 */
+		$('tr').each(function(){
+			$(this).children().eq(0).attr('align','right');
+		});
+
+
+		// 預設顯示第一個 Tab
+		var _showTab = 0;
+		var $defaultLi = $('ul.tabs li').eq(_showTab).addClass('active');
+		$($defaultLi.find('a').attr('href')).siblings().hide();
+	 
+		// 當 li 頁籤被點擊時...
+		// 若要改成滑鼠移到 li 頁籤就切換時, 把 click 改成 mouseover
+		$('ul.tabs li').click(function() {
+			// 找出 li 中的超連結 href(#id)
+			var $this = $(this),
+				_clickTab = $this.find('a').attr('href');
+			// 把目前點擊到的 li 頁籤加上 .active
+			// 並把兄弟元素中有 .active 的都移除 class
+			$this.addClass('active').siblings('.active').removeClass('active');
+			// 淡入相對應的內容並隱藏兄弟元素
+			$(_clickTab).stop(false, true).fadeIn().siblings().hide();
+	 
+			return false;
+		}).find('a').focus(function(){
+			this.blur();
+		});
+
+
+		/* 修改按鈕 */
+		$('#editBtn').click(function(){
+			var cus_id = '{CUS_ID}';
+			var msg = "";
+
+			/* 資料部份 */
+			var name = $('input[name=name]').val().trim();
+			var birthday = $('input[name=birthday]').val().trim();
+			var fb = $('input[name=fb]').val().trim();
+			var phone = $('input[name=phone]').val().trim();
+			var addr = $('input[name=addr]').val().trim();
+			var can_call = $('input:radio:checked[name=can_call]').val();
+
+			/* 問卷部份 */
+			var qu_a1 = $('input:radio:checked[name=QUES_A1]').val();
+			var qu_a2 = $('input:checkbox:checked[name="QUES_A2"]').map(function() { return $(this).val(); }).get();
+			var qu_a3 = $('input:checkbox:checked[name="QUES_A3"]').map(function() { return $(this).val(); }).get();
+			var qu_a4 = $('input:radio:checked[name=QUES_A4]').val();
+			var qu_a5 = $('input:radio:checked[name=QUES_A5]').val();
+			var qu_b1 = $('input:checkbox:checked[name="QUES_B1"]').map(function() { return $(this).val(); }).get();
+			var qu_b2 = $('input[name=QUES_B2]').val().trim();
+			var qu_b3 = $('input[name=QUES_B3]').val().trim();
+
+			if(name == "")
+			{
+				msg += '- 姓名不得為空!\n';
+			}
+
+			if(phone == "")
+			{
+				msg += '- 電話不得為空!\n';
+			}
+
+			/* 修改 */
+			var editstate = {
+				'st0' : {
+					title: '【警告】',
+					html : '<div style="font-size:16px;font-weight:bold;color:red;">確定修改 '+ name +'  ?</div>',
+					buttons : {"確定" : true, "取消" : false},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							e.preventDefault();
+
+							var jsonstr = JSON.stringify({"cus_id":cus_id,"name":name,"birthday":birthday,"fb":fb,"phone":phone,"addr":addr,"can_call":can_call,
+														"qu_a1":qu_a1,"qu_a2":qu_a2,"qu_a3":qu_a3,"qu_a4":qu_a4,"qu_a5":qu_a5,"qu_b1":qu_b1,"qu_b2":qu_b2,"qu_b3":qu_b3});
+							//alert(jsonstr);return;
+							$.post(
+									"/marykay/Customer/editcus",
+									{data:jsonstr},
+									function(res)
+									{
+										if(res.status == '100')
+										{
+											$.prompt.goToState('st1');
+										}
+										else
+										{
+											$.prompt.goToState('st2');
+										}
+
+									},
+									"json"
+								);
+							
+							return false;
+						}
+						else
+						{
+							$.prompt.close();
+						}
+					}
+				},
+				'st1' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:green;">修改成功</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();
+						}
+					}
+				},
+				'st2' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:red;">修改失敗</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();
+						}
+					}
+				}
+			};
+
+			$.prompt(editstate);
+		});
 	});
 </script>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>【MaryKay】皮膚分析卡</title>
+	<style type="text/css">
+		.container 
+		{
+			width:1000px;
+			margin: 0 auto;
+		}
+
+		.container div 
+		{
+			margin: 0 auto;
+		}
+
+		.container table 
+		{
+			margin: 0 auto;
+			font-size: 12px;
+		}
+
+		#question td 
+		{
+			border-bottom: 1px solid #CCCCCC;
+		}
+	</style>
+	<link  rel="stylesheet" type="text/css" href="{js}/jq-impromptu/jquery-impromptu.min.css" />
+	<script type="text/javascript" src="{js}/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="{js}/jq-impromptu/jquery-impromptu.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div style="text-align:center;"><H4>流星的美麗事業 - 皮膚分析卡</H4></div>
+		<div style="width:500px;margin-top: 15px;border: 1px solid #888888;">
+			<table width="500" cellpadding="2" cellspacing="2">
+				<tr>
+					<td width="30%" align="right">姓名:</td>
+					<td><input type="text" name="name" id="name" autofocus="autofocus" /></td>
+				</tr>
+				<tr>
+					<td align="right">生日:</td>
+					<td><input type="date" name="birthday" id="birthday" /></td>
+				</tr>
+				<tr>
+					<td align="right">FaceBook:</td>
+					<td><input type="text" name="fb" id="fb" size="40" /></td>
+				</tr>
+				<tr>
+					<td align="right">行動電話:</td>
+					<td><input type="text" name="phone" id="phone" /></td>
+				</tr>
+				<tr>
+					<td align="right">地址:</td>
+					<td><input type="text" name="addr" id="addr" size="40" /></td>
+				</tr>
+				<tr>
+					<td align="right">何時最方便聯絡:</td>
+					<td>
+						<input type="radio" name="can_call" value="1" checked="checked">上午 
+						<input type="radio" name="can_call" value="2">下午 
+						<input type="radio" name="can_call" value="3">晚上 
+					</td>
+				</tr>
+				
+			</table>
+		</div>
+
+		<div style="width:800px;margin-top: 10px;border: 1px solid #888888;padding:10px;">
+			<table id="question" width="800">
+				<tr>
+					<td width="40%" align="right">{QUES_A1}</td>
+					<td>
+						{QUES_A1_A}
+						<label><input name="QUES_A1" type="radio" value="{ANS_ID}" />{ANS}</label>
+						{/QUES_A1_A}
+					</td>
+				</tr>
+				<tr>
+					<td align="right">{QUES_A2}</td>
+					<td>
+						{QUES_A2_A}
+						<label><input name="QUES_A2" type="checkbox" value="{ANS_ID}" />{ANS}</label>
+						{/QUES_A2_A}
+					</td>
+				</tr>
+				<tr>
+					<td align="right">{QUES_A3}</td>
+					<td>
+						{QUES_A3_A}
+						<label><input name="QUES_A3" type="checkbox" value="{ANS_ID}" />{ANS}</label>
+						{/QUES_A3_A}
+					</td>
+				</tr>
+				<tr>
+					<td align="right">{QUES_A4}</td>
+					<td>
+						{QUES_A4_A}
+						<label style="font-size:12px;"><input name="QUES_A4" type="radio" value="{ANS_ID}" />{ANS}</label><br>
+						{/QUES_A4_A}
+					</td>
+				</tr>
+				<tr>
+					<td align="right">{QUES_A5}</td>
+					<td>
+						{QUES_A5_A}
+						<label style="font-size:12px;"><input name="QUES_A5" type="radio" value="{ANS_ID}" />{ANS}</label><br>
+						{/QUES_A5_A}
+					</td>
+				</tr>
+				<tr>
+					<td align="right">{QUES_B1}</td>
+					<td>
+						{QUES_B1_A}
+						<label><input name="QUES_B1" type="checkbox" value="{ANS_ID}" />{ANS}</label><br>
+						{/QUES_B1_A}
+					</td>
+				</tr>
+				<tr>
+					<td align="right">{QUES_B2}</td>
+					<td><input name="QUES_B2" type="text" size="50" /></td>
+				</tr>
+				<tr>
+					<td align="right">{QUES_B3}</td>
+					<td><input name="QUES_B3" type="text" size="50" /></td>
+				</tr>
+			</table>
+		</div>
+
+		<div style="width:100px;padding:20px;"><button id="okBtn">送出</button></div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+	$(function(){
+
+
+		/* 送出 */
+		$('#okBtn').click(function(){
+			var msg = "";
+
+			/* 資料部份 */
+			var name = $('input[name=name]').val().trim();
+			var birthday = $('input[name=birthday]').val().trim();
+			var fb = $('input[name=fb]').val().trim();
+			var phone = $('input[name=phone]').val().trim();
+			var addr = $('input[name=addr]').val().trim();
+			var can_call = $('input:radio:checked[name=can_call]').val();
+
+			/* 問卷部份 */
+			var qu_a1 = $('input:radio:checked[name=QUES_A1]').val();
+			var qu_a2 = $('input:checkbox:checked[name="QUES_A2"]').map(function() { return $(this).val(); }).get();
+			var qu_a3 = $('input:checkbox:checked[name="QUES_A3"]').map(function() { return $(this).val(); }).get();
+			var qu_a4 = $('input:radio:checked[name=QUES_A4]').val();
+			var qu_a5 = $('input:radio:checked[name=QUES_A5]').val();
+			var qu_b1 = $('input:checkbox:checked[name="QUES_B1"]').map(function() { return $(this).val(); }).get();
+			var qu_b2 = $('input[name=QUES_B2]').val().trim();
+			var qu_b3 = $('input[name=QUES_B3]').val().trim();
+
+			if(name == "")
+			{
+				msg += '- 姓名不得為空!<br>';
+			}
+
+			if(birthday == "")
+			{
+				msg += '- 生日不得為空!<br>';
+			}
+
+			if(fb == "")
+			{
+				msg += '- FB不得為空!<br>';
+			}
+
+			if(phone == "")
+			{
+				msg += '- 電話不得為空!<br>';
+			}
+
+			if(addr == "")
+			{
+				msg += '- 地址不得為空!<br>';
+			}
+
+			/* states */
+			var editstate = {
+				'st0' : {
+					title: '【即將送出】',
+					html : '<div style="font-size:16px;font-weight:bold;color:red;">確定? </div>',
+					buttons : {"確定" : true, "取消" : false},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							e.preventDefault();
+
+							if(msg != '')
+							{
+								$.prompt.goToState('st3');
+								return false;
+							}
+
+							var jsonstr = JSON.stringify({"cus_id":cus_id,"name":name,"birthday":birthday,"fb":fb,"phone":phone,"addr":addr,"can_call":can_call,
+														"qu_a1":qu_a1,"qu_a2":qu_a2,"qu_a3":qu_a3,"qu_a4":qu_a4,"qu_a5":qu_a5,"qu_b1":qu_b1,"qu_b2":qu_b2,"qu_b3":qu_b3});
+							//alert(jsonstr);return;
+							$.post(
+									"/marykay/Star/do_add",
+									{data:jsonstr},
+									function(res)
+									{
+										if(res.status == '100')
+										{
+											$.prompt.goToState('st1');
+										}
+										else
+										{
+											$.prompt.goToState('st2');
+										}
+
+									},
+									"json"
+								);
+							
+							return false;
+						}
+						else
+						{
+							$.prompt.close();
+						}
+					}
+				},
+				'st1' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:green;">已送出</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();
+						}
+					}
+				},
+				'st2' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:red;">失敗</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();
+						}
+					}
+				},
+				'st3' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:red;">' + msg + '</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();
+						}
+					}
+				}
+			};
+
+			$.prompt(editstate);
+		});
+	});
+</script>
