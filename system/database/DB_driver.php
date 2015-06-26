@@ -982,6 +982,8 @@ abstract class CI_DB_driver {
 			$sql = substr_replace($sql, $escaped_value, $matches[0][$c][1], strlen($matches[0][$c][0]));
 		}
 		while ($c !== 0);
+
+		//var_export($sql);exit;
 		
 		return $sql;
 	}

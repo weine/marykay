@@ -117,7 +117,7 @@ class Customer_model extends CI_Model
 
 		/* 修改資料 */
 		$cus_sql = "UPDATE {$table_cus} 
-					SET NAME=:NAME, BIRTHDAY=str_to_date(:BIRTHDAY, '%Y-%m-%d'), FB=:FB, PHONE=:PHONE, ADDR=:ADDR, CAN_CALL=:CAN_CALL 
+					SET NAME=:NAME, BIRTHDAY=str_to_date(:BIRTHDAY, '%Y-%m-%d'), FB=:FB, PHONE=:PHONE, ADDR=:ADDR, CAN_CALL=:CAN_CALL, NOTE=:NOTE 
 					WHERE CUS_ID=:CUS_ID";
 
 		/* 查詢是否有問卷紀錄 */
@@ -131,53 +131,71 @@ class Customer_model extends CI_Model
 		$upd_qu_sql = "UPDATE {$table_cans} SET QUES_A1=:QUES_A1, QUES_A2=:QUES_A2, QUES_A3=:QUES_A3, QUES_A4=:QUES_A4, QUES_A5=:QUES_A5, QUES_B1=:QUES_B1, QUES_B2=:QUES_B2, QUES_B3=:QUES_B3 
 						WHERE CUS_ID=:CUS_ID";
 
-		$cus_bind = array(
+		
+		/* transaction */
+		$this->db->trans_begin();
+
+		/* 客戶資料 */
+		if($customer['type'] == '1')
+		{
+			$cus_bind = array(
 						":CUS_ID" => $customer['cus_id'],
 						":NAME" => $customer['name'],
 						":BIRTHDAY" => $customer['birthday'],
 						":FB" => $customer['fb'],
 						":PHONE" => $customer['phone'],
 						":ADDR" => $customer['addr'],
-						":CAN_CALL" => $customer['can_call']
+						":CAN_CALL" => $customer['can_call'],
+						":NOTE" => $customer['note'],
 					);
 
-		$qu_bind = array(
-						":CUS_ID" => $customer['cus_id'],
-						":QUES_A1" => $customer['qu_a1'],
-						":QUES_A2" => $customer['qu_a2'],
-						":QUES_A3" => $customer['qu_a3'],
-						":QUES_A4" => $customer['qu_a4'],
-						":QUES_A5" => $customer['qu_a5'],
-						":QUES_B1" => $customer['qu_b1'],
-						":QUES_B2" => $customer['qu_b2'],
-						":QUES_B3" => $customer['qu_b3']
-						);
-
-		/* 檢查是否有問卷紀錄 */
-		$query_chk = $this->db->query($chk_qu_sql, array(":CUS_ID" => $customer['cus_id']));
-		if(FALSE === $query_chk)
-		{
-			$this->wlog->debug_log($this->db->last_query(), __METHOD__);
-			return FALSE;
+			$query = $this->db->query($cus_sql, $cus_bind);
+			
 		}
 
-		$record_num = $query_chk->num_rows();
-		
-		/* transaction */
-		$this->db->trans_begin();
-
-		$query_cus = $this->db->query($cus_sql, $cus_bind);
-
-		if($record_num <= 0)
+		/* 問卷調查 */
+		elseif($customer['type'] == '2')
 		{
-			$query_qu = $this->db->query($ins_qu_sql, $qu_bind);
+			/* 檢查是否有問卷紀錄 */
+			$query_chk = $this->db->query($chk_qu_sql, array(":CUS_ID" => $customer['cus_id']));
+			if(FALSE === $query_chk)
+			{
+				$this->wlog->debug_log($this->db->last_query(), __METHOD__);
+				$this->trans_rollback();
+				return FALSE;
+			}
+
+			$record_num = $query_chk->num_rows();
+
+			$qu_bind = array(
+							":CUS_ID" => $customer['cus_id'],
+							":QUES_A1" => $customer['qu_a1'],
+							":QUES_A2" => $customer['qu_a2'],
+							":QUES_A3" => $customer['qu_a3'],
+							":QUES_A4" => $customer['qu_a4'],
+							":QUES_A5" => $customer['qu_a5'],
+							":QUES_B1" => $customer['qu_b1'],
+							":QUES_B2" => $customer['qu_b2'],
+							":QUES_B3" => $customer['qu_b3']
+						);
+
+			if($record_num <= 0)
+			{
+				$query = $this->db->query($ins_qu_sql, $qu_bind);
+			}
+			else
+			{
+				$query = $this->db->query($upd_qu_sql, $qu_bind);
+			}
+
 		}
 		else
 		{
-			$query_qu = $this->db->query($upd_qu_sql, $qu_bind);
+			$this->db->trans_rollback();
+			return FALSE;
 		}
 
-		if(FALSE === $query_cus || FALSE === $query_qu)
+		if(FALSE === $query)
 		{
 			$this->wlog->debug_log($this->db->last_query(), __METHOD__);
 			$this->db->trans_rollback();
@@ -203,7 +221,7 @@ class Customer_model extends CI_Model
 		$table_cus = 'CUSTOMER';
 		$table_cans = 'CUS_ANSWER';
 
-		$sql = "SELECT t.CUS_ID, t.NAME, DATE_FORMAT(t.BIRTHDAY, '%Y-%m-%d') BIRTHDAY, t.FB, t.PHONE, t.ADDR, t.CAN_CALL, 
+		$sql = "SELECT t.CUS_ID, t.NAME, DATE_FORMAT(t.BIRTHDAY, '%Y-%m-%d') BIRTHDAY, t.FB, t.PHONE, t.ADDR, t.CAN_CALL, t.NOTE, 
 						a.QUES_A1 CUS_Q_A1, a.QUES_A2 CUS_Q_A2, a.QUES_A3 CUS_Q_A3, a.QUES_A4 CUS_Q_A4, a.QUES_A5 CUS_Q_A5, a.QUES_B1 CUS_Q_B1, a.QUES_B2 CUS_Q_B2, a.QUES_B3 CUS_Q_B3 
 				FROM {$table_cus} t
 				LEFT JOIN {$table_cans} a ON a.CUS_ID=t.CUS_ID 
@@ -244,6 +262,74 @@ class Customer_model extends CI_Model
 		{
 			$this->wlog->debug_log($this->db->last_query(), __METHOD__);
 			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+
+	}
+
+	/* 客戶好友功能 */
+	public function cusfriend($data)
+	{
+		if(!is_array($data) || count($data) == 0)
+		{
+			return "-1";
+		}
+
+		$table = "CUS_FRIEND";
+
+		/* 新增 */
+		$ins_sql = "INSERT INTO {$table}(CUS_ID, CF_NAME, CF_TEL, INS_DT) VALUES(:CUS_ID, :CF_NAME, :CF_TEL, NOW())";
+
+		/* 刪除 */
+		$del_sql = "UPDATE {$table} SET ISDEL = 1, ISDEL_DT=NOW() WHERE CF_SEQ=:CF_SEQ";
+
+		/* 修改 */
+		$upd_sql = "UPDATE {$table} SET CF_NAME=:CF_NAME, CF_TEL=:CF_TEL WHERE CUS_ID=:CUS_ID AND CF_SEQ=:CF_SEQ";
+
+		if($data['type'] == '1')
+		{
+			$bind = array(
+							":CUS_ID" => $data['cus_id'],
+							":CF_NAME" => $data['cfriName'],
+							":CF_TEL" => $data['cfriTel']
+						);
+
+			$query = $this->db->query($ins_sql, $bind);
+		}
+		elseif($data['type'] == '2')
+		{
+			$bind = array(":CF_SEQ" => $data['cus_seq']);
+
+			$query = $this->db->query($del_sql, $bind);
+		}
+		elseif($data['type'] == '3')
+		{
+			$bind = array(
+							":CUS_ID" => $data['cus_id'],
+							":CF_SEQ" => $data['cus_seq'],
+							":CF_NAME" => $data['fname'],
+							":CF_TEL" => $data['ftel']
+						);
+
+			$query = $this->db->query($upd_sql, $bind);
+		}
+		else
+		{
+			return "-1";
+		}
+
+		if(FALSE === $query)
+		{
+			$this->wlog->debug_log($this->db->last_query(), __METHOD__);
+			return FALSE;
+		}
+		elseif($this->db->affected_rows() <= 0)
+		{
+			$this->wlog->debug_log('資料庫無處理', __METHOD__);
+			return 0;
 		}
 		else
 		{

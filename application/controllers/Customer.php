@@ -384,25 +384,95 @@ class Customer extends CI_Controller
 		$this->parser->parse('page_outer.html', $this->data);
 	}
 
-	/* 修改功能 */
+	/** 
+	 * 修改功能
+	 * @action
+	 *
+	 * @post_param type 修改類型(1:客戶資料/2:問卷調查)
+	 * 
+	 * @return [type] [description]
+	 */
 	public function editcus()
 	{
 		$data = $this->api_input->json_input($this->input->post("data"));
+		$type = (string) trim($data['type']);
+		$output = array();
 
-		$data['qu_a1'] = (isset($data['qu_a1']))? (string) trim($data['qu_a1']) : "";
-		$data['qu_a2'] = (count($data['qu_a2']) > 0)? implode(",", $data['qu_a2']) : "";
-		$data['qu_a3'] = (count($data['qu_a3']) > 0)? implode(",", $data['qu_a3']) : "";
-		$data['qu_a4'] = (isset($data['qu_a4']))? (string) trim($data['qu_a4']) : "";
-		$data['qu_a5'] = (isset($data['qu_a5']))? (string) trim($data['qu_a5']) : "";
-		$data['qu_b1'] = (count($data['qu_b1']) > 0)? implode(",", $data['qu_b1']) : "";
-		$data['qu_b2'] = (string) trim($data['qu_b2']);
-		$data['qu_b3'] = (string) trim($data['qu_b3']);
+		if($type == '1')
+		{
+			foreach($data as $k => $v)
+			{
+				$data[$k] = (string) trim($v);
+			}
+		}
+		elseif($type == '2')
+		{
+			$data['qu_a1'] = (isset($data['qu_a1']))? (string) trim($data['qu_a1']) : "";
+			$data['qu_a2'] = (count($data['qu_a2']) > 0)? implode(",", $data['qu_a2']) : "";
+			$data['qu_a3'] = (count($data['qu_a3']) > 0)? implode(",", $data['qu_a3']) : "";
+			$data['qu_a4'] = (isset($data['qu_a4']))? (string) trim($data['qu_a4']) : "";
+			$data['qu_a5'] = (isset($data['qu_a5']))? (string) trim($data['qu_a5']) : "";
+			$data['qu_b1'] = (count($data['qu_b1']) > 0)? implode(",", $data['qu_b1']) : "";
+			$data['qu_b2'] = (string) trim($data['qu_b2']);
+			$data['qu_b3'] = (string) trim($data['qu_b3']);
+		}
+		else
+		{
+			$output['status'] = "103";
+			$output['api_msg'] = "輸入參數錯誤";
+			$json = json_encode($output);
+			echo $json;
+			exit;
+		}
 
 		/* load model */
 		$this->load->model('Customer_model');
 
-		$output = array();
 		$result = $this->Customer_model->edit_cus($data);
+
+		if(FALSE === $result)
+		{
+			$output['status'] = "101";
+			$output['api_msg'] = "資料庫操作失敗!";
+		}
+		elseif("-1" === $result)
+		{
+			$output['status'] = "102";
+			$output['api_msg'] = "輸入參數錯誤";
+		}
+		else
+		{
+			$output['status'] = "100";
+			$output['api_msg'] = "修改成功";
+		}
+
+		$json = json_encode($output);
+		echo $json;
+	}
+
+	/**
+	 * 推薦好友功能
+	 *
+	 * @param type 功能代碼(1:新增/2:刪除/3:修改)
+	 */
+	public function cusfriend()
+	{
+		$data = $this->api_input->json_input($this->input->post("data"));
+		$type = (string) trim($data['type']);
+		$output = array();
+
+		if($type == '1')
+		{
+			foreach($data as $k => $v)
+			{
+				$data[$k] = (string) trim($v);
+			}
+		}
+
+		/* load model */
+		$this->load->model('Customer_model');
+
+		$result = $this->Customer_model->cusfriend($data);
 
 		if(FALSE === $result)
 		{

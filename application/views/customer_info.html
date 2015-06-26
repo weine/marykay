@@ -74,6 +74,7 @@
 	div.tab_content table {
 		border:none;
 	}
+
 </style>
 
 <main class="content">
@@ -119,7 +120,14 @@
 						<input name="can_call" type="radio" value="3" />晚上
 					</td>
 				</tr>
+				<tr>
+					<td style="vertical-align: middle;">備註</td>
+					<td>
+						<textarea name="note" rows="6" cols="40">{NOTE}</textarea>
+					</td>
+				</tr>
 			</table>
+			<div style="width:80px;margin: 0 auto;padding:20px;"><button id="editBtn1" type="button">修改</button></div>
 		</div>
 		<div id="tab2" class="tab_content">
 			<table id="question" width="700">
@@ -180,17 +188,40 @@
 					<td><input name="QUES_B3" type="text" size="50" value="{CUS_Q_B3}" /></td>
 				</tr>
 			</table>
+			<div style="width:80px;margin: 0 auto;padding:20px;"><button id="editBtn2" type="button">送出</button></div>
 		</div>
 
 		<div id="tab3" class="tab_content">
-
+			<table width="400">
+				<tr>
+					<td></td>
+					<td>姓名</td>
+					<td>電話</td>
+					<td><button class="addfriBtn" type="button">新增</button></td>
+				</tr>
+				<tr>
+					<td><input name="cusfri[]" type="hidden" value="new" /></td>
+					<td><input name="fname[]" type="text" /></td>
+					<td><input name="ftel[]" type="text" /></td>
+					<td><button class="delfriBtn" type="button" value="1">刪除</button></td>
+				</tr>
+				<tr>
+					<td><input name="cusfri[]" type="hidden" value="new" /></td>
+					<td><input name="fname[]" type="text" /></td>
+					<td><input name="ftel[]" type="text" /></td>
+					<td><button class="delfriBtn" type="button" value="1">刪除</button></td>
+				</tr>
+				
+			</table>
+			<div style="width:80px;margin: 0 auto;padding:20px;"><button id="editBtn3" type="button">修改</button></div>
 		</div>
+
 	</div>
 </div>
-	<div style="width:80px;margin: 0 auto;padding:20px;"><button id="editBtn" style="margin:0 auto;" type="button">修改</button></div>
 </main><!-- .content -->
 <script type="text/javascript">
 	var can_call = {CAN_CALL};
+
 	switch(can_call)
 	{
 		case 1:
@@ -266,9 +297,10 @@
 	});
 
 	$(function(){
+		var cus_id = '{CUS_ID}';
 
 		/* 使table標題右對齊 */
-		$('tr').each(function(){
+		$('#tab1 tr').each(function(){
 			$(this).children().eq(0).attr('align','right');
 		});
 
@@ -295,10 +327,8 @@
 			this.blur();
 		});
 
-
-		/* 修改按鈕 */
-		$('#editBtn').click(function(){
-			var cus_id = '{CUS_ID}';
+		/* 修改按鈕 1 */
+		$('#editBtn1').click(function(){
 			var msg = "";
 
 			/* 資料部份 */
@@ -308,16 +338,7 @@
 			var phone = $('input[name=phone]').val().trim();
 			var addr = $('input[name=addr]').val().trim();
 			var can_call = $('input:radio:checked[name=can_call]').val();
-
-			/* 問卷部份 */
-			var qu_a1 = $('input:radio:checked[name=QUES_A1]').val();
-			var qu_a2 = $('input:checkbox:checked[name="QUES_A2"]').map(function() { return $(this).val(); }).get();
-			var qu_a3 = $('input:checkbox:checked[name="QUES_A3"]').map(function() { return $(this).val(); }).get();
-			var qu_a4 = $('input:radio:checked[name=QUES_A4]').val();
-			var qu_a5 = $('input:radio:checked[name=QUES_A5]').val();
-			var qu_b1 = $('input:checkbox:checked[name="QUES_B1"]').map(function() { return $(this).val(); }).get();
-			var qu_b2 = $('input[name=QUES_B2]').val().trim();
-			var qu_b3 = $('input[name=QUES_B3]').val().trim();
+			var note = $('textarea[name=note]').val();
 
 			if(name == "")
 			{
@@ -340,8 +361,7 @@
 						{
 							e.preventDefault();
 
-							var jsonstr = JSON.stringify({"cus_id":cus_id,"name":name,"birthday":birthday,"fb":fb,"phone":phone,"addr":addr,"can_call":can_call,
-														"qu_a1":qu_a1,"qu_a2":qu_a2,"qu_a3":qu_a3,"qu_a4":qu_a4,"qu_a5":qu_a5,"qu_b1":qu_b1,"qu_b2":qu_b2,"qu_b3":qu_b3});
+							var jsonstr = JSON.stringify({"type":"1","cus_id":cus_id,"name":name,"birthday":birthday,"fb":fb,"phone":phone,"addr":addr,"can_call":can_call,"note":note});
 							//alert(jsonstr);return;
 							$.post(
 									"/marykay/Customer/editcus",
@@ -392,6 +412,259 @@
 			};
 
 			$.prompt(editstate);
+		});
+
+		/* 修改按鈕 2 */
+		$('#editBtn2').click(function(){
+
+			/* 問卷部份 */
+			var qu_a1 = $('input:radio:checked[name=QUES_A1]').val();
+			var qu_a2 = $('input:checkbox:checked[name="QUES_A2"]').map(function() { return $(this).val(); }).get();
+			var qu_a3 = $('input:checkbox:checked[name="QUES_A3"]').map(function() { return $(this).val(); }).get();
+			var qu_a4 = $('input:radio:checked[name=QUES_A4]').val();
+			var qu_a5 = $('input:radio:checked[name=QUES_A5]').val();
+			var qu_b1 = $('input:checkbox:checked[name="QUES_B1"]').map(function() { return $(this).val(); }).get();
+			var qu_b2 = $('input[name=QUES_B2]').val().trim();
+			var qu_b3 = $('input[name=QUES_B3]').val().trim();
+
+			/* 修改 */
+			var editstate = {
+				'st0' : {
+					title: '【警告】',
+					html : '<div style="font-size:16px;font-weight:bold;color:red;">送出問卷?</div>',
+					buttons : {"確定" : true, "取消" : false},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							e.preventDefault();
+
+							var jsonstr = JSON.stringify({"type":"2","qu_a1":qu_a1,"qu_a2":qu_a2,"qu_a3":qu_a3,"qu_a4":qu_a4,"qu_a5":qu_a5,"qu_b1":qu_b1,"qu_b2":qu_b2,"qu_b3":qu_b3});
+							//alert(jsonstr);return;
+							$.post(
+									"/marykay/Customer/editcus",
+									{data:jsonstr},
+									function(res)
+									{
+										if(res.status == '100')
+										{
+											$.prompt.goToState('st1');
+										}
+										else
+										{
+											$.prompt.goToState('st2');
+										}
+
+									},
+									"json"
+								);
+							
+							return false;
+						}
+						else
+						{
+							$.prompt.close();
+						}
+					}
+				},
+				'st1' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:green;">已送出</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();
+						}
+					}
+				},
+				'st2' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:red;">送出失敗</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();
+						}
+					}
+				}
+			};
+
+			$.prompt(editstate);
+		});
+
+		/* 修改按鈕 3 */
+		$('#editBtn3').click(function(){
+			$('input[name^=fname]').each(function(){
+				alert($(this).val());
+			});
+			return;
+
+			var msg = "";
+
+			/* 推薦部份 */
+			
+
+			if(name == "")
+			{
+				msg += '- 姓名不得為空!\n';
+			}
+
+			if(phone == "")
+			{
+				msg += '- 電話不得為空!\n';
+			}
+
+			/* 修改 */
+			var editstate = {
+				'st0' : {
+					title: '【警告】',
+					html : '<div style="font-size:16px;font-weight:bold;color:red;">確定修改 '+ name +'  ?</div>',
+					buttons : {"確定" : true, "取消" : false},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							e.preventDefault();
+
+							var jsonstr = JSON.stringify({"cus_id":cus_id,"name":name,"birthday":birthday,"fb":fb,"phone":phone,"addr":addr,"can_call":can_call,"note":note,
+														"qu_a1":qu_a1,"qu_a2":qu_a2,"qu_a3":qu_a3,"qu_a4":qu_a4,"qu_a5":qu_a5,"qu_b1":qu_b1,"qu_b2":qu_b2,"qu_b3":qu_b3,
+														"fname_0":fname_0,"ftel_0":ftel_0,"fname_1":fname_1,"ftel_1":ftel_1,"fname_2":fname_2,"ftel_2":ftel_2,
+														"fname_3":fname_3,"ftel_3":ftel_3,"fname_4":fname_4,"ftel_4":ftel_4});
+							//alert(jsonstr);return;
+							$.post(
+									"/marykay/Customer/editcus",
+									{data:jsonstr},
+									function(res)
+									{
+										if(res.status == '100')
+										{
+											$.prompt.goToState('st1');
+										}
+										else
+										{
+											$.prompt.goToState('st2');
+										}
+
+									},
+									"json"
+								);
+							
+							return false;
+						}
+						else
+						{
+							$.prompt.close();
+						}
+					}
+				},
+				'st1' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:green;">修改成功</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();
+						}
+					}
+				},
+				'st2' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:red;">修改失敗</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();
+						}
+					}
+				}
+			};
+
+			$.prompt(editstate);
+		});
+
+		/* 刪除推薦 */
+		$('.delfriBtn').click(function(){
+			$(this).parent().parent().remove();
+		});
+
+		/* 新增推薦 */
+		$('.addfriBtn').click(function(){
+			var addfriHtml = '<div style="width:200px;margin:0 auto;padding:10px;">姓名 <input name="cfriName" type="text" /></div>' + 
+							 '<div style="width:200px;margin:0 auto;padding:10px;">電話 <input name="cfriTel" type="text" /></div>';
+
+			var addstate = {
+				'st0' : {
+					title: '【新增推薦好友】',
+					html : addfriHtml,
+					buttons : {"確定" : true, "取消" : false},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							var cfriName = $('input[name=cfriName]').val();
+							var cfriTel = $('input[name=cfriTel]').val();
+							e.preventDefault();
+
+							var jsonstr = JSON.stringify({"cfriName":cfriName,"cfriTel":cfriTel,"type":"1"});
+							//alert(jsonstr);return;
+							$.post(
+									"/marykay/Customer/cusfriend",
+									{data:jsonstr},
+									function(res)
+									{
+										if(res.status == '100')
+										{
+											$.prompt.goToState('st1');
+										}
+										else
+										{
+											$.prompt.goToState('st2');
+										}
+
+									},
+									"json"
+								);
+							
+							return false;
+						}
+						else
+						{
+							$.prompt.close();
+						}
+					}
+				},
+				'st1' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:green;">新增成功</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();
+						}
+					}
+				},
+				'st2' : {
+					html : '<div style="font-size:16px;font-weight:bold;color:red;">新增失敗</div>',
+					buttons : {"確定":true},
+					submit : function(e,v,m,f){
+						if(v)
+						{
+							$.prompt.close();
+						}
+					}
+				}
+			};
+
+			$.prompt(addstate);
+
+			var row = '<tr>' + 
+						'<td><input name="cusfri[]" type="hidden" /></td>' +
+						'<td><input name="fname[]" type="text" /></td>' +
+						'<td><input name="ftel[]" type="text" /></td>' +
+						'<td><button class="delfriBtn" type="button" value="1">刪除</button></td>' +
+						'</tr>';
+
+			$(this).parent().parent().parent().append(row);
+			$('.delfriBtn').bind('click',function(){
+				$(this).parent().parent().remove();
+			});
 		});
 	});
 </script>
